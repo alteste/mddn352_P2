@@ -80,6 +80,7 @@
                 request.onload = function() {
                     if (request.status >= 200 && request.status < 400){
                         data = JSON.parse(request.responseText).data.image_url;
+                        data = data.replace(/^http:\/\//i, 'https://');
                         document.getElementById("giphyme").innerHTML = '<center><img src = "'+data+'"  title="GIF via Giphy"></center>';
                     } else {
                         document.getElementById("giphyme").innerHTML = 'reached giphy, but API returned an error';
