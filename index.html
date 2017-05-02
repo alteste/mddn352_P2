@@ -1,33 +1,48 @@
 <!DOCTYPE>
 <html>
     <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="main.css">
     </head>
-    <body>
+    <body onload="getLocation()">
         
-        <button id ="button" onclick="getLocation()">Try It</button>
-        <p id="demo"></p>
-        <p id="summaryhere">no data</p>
-        <p id="temphere">no temp</p>
-        <p id="cityhere">no city</p>
+        <h1>Daily Forecast</h1>
+<!--        <button id ="button" onclick="getLocation()">Get Data</button>-->
+<!--        <p id="demo"></p>-->
+        <h2 id="cityhere"> </h2>
+        <h3 id="dayDate">no date</h3>
+        <div id="content"><span id = "giphyme"></span></div>
+        <div id="condition"><div id="summaryhere"></div></div>
+        <h3 id="temphere"></h3>
+        
         <script>
             
-            var x = document.getElementById("demo");
-            var button = document.getElementById("button");
+            var d = new Date()
+            var weekday=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday",
+                        "Friday","Saturday")
+            
+            var today = new Date();
+            var dd = today.getDate();
+            
+            document.getElementById("dayDate").innerHTML = weekday[d.getDay()] + " " + dd
+//            var x = document.getElementById("demo");
+//            var button = document.getElementById("button");
 
             function getLocation() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showPosition);
-                    button.innerHTML = "Generate new";
+//                    button.innerHTML = "Generate new";
                 } else { 
-                    x.innerHTML = "Geolocation is not supported by this browser.";
+//                    x.innerHTML = "Geolocation is not supported by this browser.";
                 }
             };
 
             function showPosition(position) {
                 lat = position.coords.latitude;
                 long = position.coords.longitude;
-                x.innerHTML = "Latitude: " + lat + 
-                "<br>Longitude: " + long;
+//                x.innerHTML = "Latitude: " + lat + 
+//                "<br>Longitude: " + long;
                 getPlace();
                 getWeatherData();
                 
@@ -37,11 +52,9 @@
                 url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + long;
                 getCity = new XMLHttpRequest;
                 getCity.open('GET', url, true);
-                console.log(url);
                 
-                getCity.onload = function() {
-                    if (getCity.readyState == 4){
-                        console.log('hello');
+                getCity.onreadystatechange = function() {
+                    if (getCity.readyState == 4 && getCity.status == 200){
                         city = JSON.parse(getCity.responseText).address.state;
                         document.getElementById("cityhere").innerHTML = city;
 
@@ -58,15 +71,14 @@
                 getWeather = new XMLHttpRequest;
                 getWeather.open('GET', "https://thingproxy.freeboard.io/fetch/https://api.darksky.net/forecast/28cfc3c13db8141f0a326f7eaa938d50/" + lat + "," + long, true);
 
-                getWeather.onload = function() {
-                    if (getWeather.status >= 200 && getWeather.status < 400){
+                getWeather.onreadystatechange = function() {
+                    if (getWeather.readyState == 4 && getWeather.status == 200){
                         summary = JSON.parse(getWeather.responseText).currently.icon;
                         document.getElementById("summaryhere").innerHTML = summary;
                         tempf = JSON.parse(getWeather.responseText).currently.temperature;
                         
                         tempc = Math.round((tempf - 32) * 5 / 9);
-                        document.getElementById("temphere").innerHTML = tempc;
-                        console.log(tempc);
+                        document.getElementById("temphere").innerHTML = tempc + '&deg';
                         getGif();
                     } else {
                         document.getElementById("summaryhere").innerHTML = 'reached giphy, but API returned an error';
@@ -78,13 +90,13 @@
 
             
             function getGif() {
-                q = "spongebob+"; // search query
+                q = summary; // search query
 
                 request = new XMLHttpRequest;
                 request.open('GET', 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='+q, true);
 
-                request.onload = function() {
-                    if (request.status >= 200 && request.status < 400){
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4 && request.status == 200){
                         data = JSON.parse(request.responseText).data.image_url;
                         data = data.replace(/^http:\/\//i, 'https://');
                         document.getElementById("giphyme").innerHTML = '<center><img src = "'+data+'"  title="GIF via Giphy"></center>';
@@ -102,8 +114,6 @@
                 
 
         </script>
-        
-        <span id = "giphyme"></span>
         
     </body>
     
