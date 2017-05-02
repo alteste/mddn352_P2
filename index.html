@@ -7,6 +7,7 @@
         <button id ="button" onclick="getLocation()">Try It</button>
         <p id="demo"></p>
         <p id="summaryhere">no data</p>
+        <p id="temphere">no temp</p>
         <p id="cityhere">no city</p>
         <script>
             
@@ -54,19 +55,24 @@
             
             function getWeatherData() {
 
-                getSum = new XMLHttpRequest;
-                getSum.open('GET', "https://thingproxy.freeboard.io/fetch/https://api.darksky.net/forecast/28cfc3c13db8141f0a326f7eaa938d50/" + lat + "," + long, true);
+                getWeather = new XMLHttpRequest;
+                getWeather.open('GET', "https://thingproxy.freeboard.io/fetch/https://api.darksky.net/forecast/28cfc3c13db8141f0a326f7eaa938d50/" + lat + "," + long, true);
 
-                getSum.onload = function() {
-                    if (getSum.status >= 200 && getSum.status < 400){
-                        summary = JSON.parse(getSum.responseText).currently.icon;
+                getWeather.onload = function() {
+                    if (getWeather.status >= 200 && getWeather.status < 400){
+                        summary = JSON.parse(getWeather.responseText).currently.icon;
                         document.getElementById("summaryhere").innerHTML = summary;
+                        tempf = JSON.parse(getWeather.responseText).currently.temperature;
+                        
+                        tempc = Math.round((tempf - 32) * 5 / 9);
+                        document.getElementById("temphere").innerHTML = tempc;
+                        console.log(tempc);
                         getGif();
                     } else {
                         document.getElementById("summaryhere").innerHTML = 'reached giphy, but API returned an error';
                      }
                 };
-                getSum.send();
+                getWeather.send();
                 
             };
 
