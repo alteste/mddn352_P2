@@ -3,7 +3,7 @@ body {
     font-family: Arial Black, sans-serif;
     font-weight: regular;
     text-transform: uppercase;
-    margin-top: 35px;
+    margin-top: 15px;
     margin-left: 0;
     margin-right: 0;
     color: #E6567A;
@@ -37,7 +37,7 @@ h3 {
 
 img {
     width: 100%;
-    max-height: 250px;
+    max-height: 200px;
 }
 
 #condition {
