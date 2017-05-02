@@ -1,0 +1,103 @@
+<!DOCTYPE>
+<html>
+    <head>
+    </head>
+    <body>
+        
+        <button id ="button" onclick="getLocation()">Try It</button>
+        <p id="demo"></p>
+        <p id="summaryhere">no data</p>
+        <p id="cityhere">no city</p>
+        <script>
+            
+            var x = document.getElementById("demo");
+            var button = document.getElementById("button");
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                    button.innerHTML = "Generate new";
+                } else { 
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            };
+
+            function showPosition(position) {
+                lat = position.coords.latitude;
+                long = position.coords.longitude;
+                x.innerHTML = "Latitude: " + lat + 
+                "<br>Longitude: " + long;
+                getPlace();
+                getWeatherData();
+                
+            };
+            
+            function getPlace() {  
+                url = "http://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + long;
+                getCity = new XMLHttpRequest;
+                getCity.open('GET', url, true);
+                console.log(url);
+                
+                getCity.onload = function() {
+                    if (getCity.readyState == 4){
+                        console.log('hello');
+                        city = JSON.parse(getCity.responseText).address.state;
+                        document.getElementById("cityhere").innerHTML = city;
+
+
+                    } else {
+                        document.getElementById("cityhere").innerHTML = 'reached nominatim, but API returned an error';
+                     }
+                };
+                getCity.send();
+            };
+            
+            function getWeatherData() {
+
+                getSum = new XMLHttpRequest;
+                getSum.open('GET', "https://thingproxy.freeboard.io/fetch/https://api.darksky.net/forecast/28cfc3c13db8141f0a326f7eaa938d50/" + lat + "," + long, true);
+
+                getSum.onload = function() {
+                    if (getSum.status >= 200 && getSum.status < 400){
+                        summary = JSON.parse(getSum.responseText).currently.icon;
+                        document.getElementById("summaryhere").innerHTML = summary;
+                        getGif();
+                    } else {
+                        document.getElementById("summaryhere").innerHTML = 'reached giphy, but API returned an error';
+                     }
+                };
+                getSum.send();
+                
+            };
+
+            
+            function getGif() {
+                q = "spongebob+"; // search query
+
+                request = new XMLHttpRequest;
+                request.open('GET', 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='+q, true);
+
+                request.onload = function() {
+                    if (request.status >= 200 && request.status < 400){
+                        data = JSON.parse(request.responseText).data.image_url;
+                        document.getElementById("giphyme").innerHTML = '<center><img src = "'+data+'"  title="GIF via Giphy"></center>';
+                    } else {
+                        document.getElementById("giphyme").innerHTML = 'reached giphy, but API returned an error';
+                     }
+                };
+
+                request.onerror = function() {
+                    console.log('connection error');
+                };
+
+                request.send();
+            };
+                
+
+        </script>
+        
+        <span id = "giphyme"></span>
+        
+    </body>
+    
+</html>
