@@ -25,6 +25,8 @@
             var today = new Date();
             var dd = today.getDate();
             
+            var status;
+            
             document.getElementById("dayDate").innerHTML = weekday[d.getDay()] + " " + dd
 //            var x = document.getElementById("demo");
 //            var button = document.getElementById("button");
@@ -74,14 +76,81 @@
                 getWeather.onreadystatechange = function() {
                     if (getWeather.readyState == 4 && getWeather.status == 200){
                         summary = JSON.parse(getWeather.responseText).currently.icon;
-                        document.getElementById("summaryhere").innerHTML = summary;
-                        tempf = JSON.parse(getWeather.responseText).currently.temperature;
+                        console.log(summary);
                         
+                        if (summary == 'clear-day') {
+                            summary = 'clear';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-day.png"></center>';
+//                            sun by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'clear-night') {
+                            summary = 'clear';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-night.png"></center>';
+                        }
+                        
+                        else if (summary == 'rain') {
+                            summary = 'rain';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/rain.png"></center>';
+//                            Rain by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'snow') {
+                            summary = 'snow';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/snow.png"></center>';
+                        }
+                        
+                        else if (summary == 'sleet') {
+                            summary = 'sleet';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/rain.png"></center>';
+//                            Rain by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'wind') {
+                            summary = 'wind';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/wind.png"></center>';
+//                            wind power by Giacomo Drudi from the Noun Project
+                        }
+                        
+                        else if (summary == 'fog') {
+                            summary = 'fog';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/fog.png"></center>';
+//                            Cloud by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'cloudy') {
+                            summary = 'cloud';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/cloud.png"></center>';
+//                            Cloud by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'partly-cloudy-day') {
+                            summary = 'cloud';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/partly-cloudy-day.png"></center>';
+//                            Partly Sunny by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else if (summary == 'partly-cloudy-night') {
+                            summary = 'cloud';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/partly-cloudy-night.png"></center>';
+//                            Cloud by Anastasia Latysheva from the Noun Project
+                        }
+                        
+                        else {
+                            summary = 'clear';
+                            document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-day.png"></center>';
+//                            sun by Anastasia Latysheva from the Noun Project
+                        };
+                        console.log(summary);
+                        
+                        tempf = JSON.parse(getWeather.responseText).currently.temperature;
                         tempc = Math.round((tempf - 32) * 5 / 9);
                         document.getElementById("temphere").innerHTML = tempc + '&deg';
+                        
                         getGif();
+                        
                     } else {
-                        document.getElementById("summaryhere").innerHTML = 'reached giphy, but API returned an error';
+                        document.getElementById("summaryhere").innerHTML = 'reached darksky, but API returned an error';
                      }
                 };
                 getWeather.send();
@@ -90,7 +159,7 @@
 
             
             function getGif() {
-                q = summary; // search query
+                q = "simpsons+" +summary; // search query
 
                 request = new XMLHttpRequest;
                 request.open('GET', 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='+q, true);
