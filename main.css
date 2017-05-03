@@ -64,3 +64,20 @@ img {
     font-size: 30px;
     margin-top: 20px;
 }
+
+#weatherImg { 
+    width: 20%;
+}
+
+@media screen and (min-width: 321px) {
+    body {
+        height: 568px;
+        width: 320px;
+        margin: 0 auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+    }
+}
