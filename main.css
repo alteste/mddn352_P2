@@ -7,6 +7,7 @@ body {
     margin-left: 0;
     margin-right: 0;
     color: #E6567A;
+    transition: .3s ease-in-out;
 }
 
 h1 {
@@ -52,6 +53,7 @@ img {
     text-align: center;
     font-size: 18px;
     display: table;
+    transition: .3s ease-in-out;
 }
 
 #summaryhere {
