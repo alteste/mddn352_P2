@@ -8,63 +8,57 @@
     <body onload="getLocation()">
         
         <h1>Daily Forecast</h1>
-<!--        <button id ="button" onclick="getLocation()">Get Data</button>-->
-<!--        <p id="demo"></p>-->
         <h2 id="cityhere"> </h2>
-        <h3 id="dayDate">no date</h3>
+        <h3 id="dayDate"></h3>
         <div id="content"><span id = "giphyme"></span></div>
         <div id="condition"><div id="summaryhere"></div></div>
         <h3 id="temphere"></h3>
         
         <script>
             
-            var d = new Date()
-            var weekday=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday",
-                        "Friday","Saturday")
+            var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+            var months = new Array ("January","February","March","April","May","June","July","August","September","Ocotber","November","December");
             
             var today = new Date();
+            
             var dd = today.getDate();
             
-            var status;
-            
-            document.getElementById("dayDate").innerHTML = weekday[d.getDay()] + " " + dd
-//            var x = document.getElementById("demo");
-//            var button = document.getElementById("button");
+            document.getElementById("dayDate").innerHTML = weekday[today.getDay()] + " " + dd + "<br>" + months[today.getMonth()];
 
             function getLocation() {
+                
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showPosition);
-//                    button.innerHTML = "Generate new";
-                } else { 
-//                    x.innerHTML = "Geolocation is not supported by this browser.";
                 }
             };
 
             function showPosition(position) {
+                
                 lat = position.coords.latitude;
                 long = position.coords.longitude;
-//                x.innerHTML = "Latitude: " + lat + 
-//                "<br>Longitude: " + long;
                 getPlace();
                 getWeatherData();
                 
             };
             
             function getPlace() {  
+                
                 url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + long;
                 getCity = new XMLHttpRequest;
                 getCity.open('GET', url, true);
                 
                 getCity.onreadystatechange = function() {
+                    
                     if (getCity.readyState == 4 && getCity.status == 200){
+                        
                         city = JSON.parse(getCity.responseText).address.state;
                         document.getElementById("cityhere").innerHTML = city;
-
 
                     } else {
                         document.getElementById("cityhere").innerHTML = 'reached nominatim, but API returned an error';
                      }
                 };
+                
                 getCity.send();
             };
             
@@ -72,80 +66,94 @@
 
                 getWeather = new XMLHttpRequest;
                 getWeather.open('GET', "https://thingproxy.freeboard.io/fetch/https://api.darksky.net/forecast/28cfc3c13db8141f0a326f7eaa938d50/" + lat + "," + long, true);
-
+//                        powered by darksky
                 getWeather.onreadystatechange = function() {
                     if (getWeather.readyState == 4 && getWeather.status == 200){
                         summary = JSON.parse(getWeather.responseText).currently.icon;
                         console.log(summary);
                         
+//                        icons from Giacomo Drudi and icon 54 from noun project
+                        
                         if (summary == 'clear-day') {
-                            summary = 'clear';
+                            summary = ['sun'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-day.png"></center>';
-//                            sun by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'clear-night') {
-                            summary = 'clear';
+                            summary = ['night', 'moon'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-night.png"></center>';
                         }
                         
                         else if (summary == 'rain') {
-                            summary = 'rain';
+                            summary = ['rain', 'wet', 'water'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/rain.png"></center>';
-//                            Rain by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'snow') {
-                            summary = 'snow';
+                            summary = ['snow'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/snow.png"></center>';
                         }
                         
                         else if (summary == 'sleet') {
-                            summary = 'sleet';
+                            summary = ['sleet'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/rain.png"></center>';
-//                            Rain by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'wind') {
-                            summary = 'wind';
+                            summary = ['wind', 'breeze'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/wind.png"></center>';
-//                            wind power by Giacomo Drudi from the Noun Project
                         }
                         
                         else if (summary == 'fog') {
-                            summary = 'fog';
+                            summary = ['fog'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/fog.png"></center>';
-//                            Cloud by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'cloudy') {
-                            summary = 'cloud';
+                            summary = ['cloud'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/cloud.png"></center>';
-//                            Cloud by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'partly-cloudy-day') {
-                            summary = 'cloud';
+                            summary = ['cloud'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/partly-cloudy-day.png"></center>';
-//                            Partly Sunny by Anastasia Latysheva from the Noun Project
                         }
                         
                         else if (summary == 'partly-cloudy-night') {
-                            summary = 'cloud';
+                            summary = ['cloud', 'night', 'moon'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/partly-cloudy-night.png"></center>';
-//                            Cloud by Anastasia Latysheva from the Noun Project
                         }
                         
                         else {
-                            summary = 'clear';
+                            summary = ['clear'];
                             document.getElementById("summaryhere").innerHTML = '<center><img id="weatherImg" src ="images/clear-day.png"></center>';
-//                            sun by Anastasia Latysheva from the Noun Project
                         };
-                        console.log(summary);
+                        
                         
                         tempf = JSON.parse(getWeather.responseText).currently.temperature;
                         tempc = Math.round((tempf - 32) * 5 / 9);
                         document.getElementById("temphere").innerHTML = tempc + '&deg';
+                        console.log(tempc);
+                        
+                        if (tempc <= 14) {
+                            summary.push('cold', 'freeze');
+                            document.getElementById("condition").style.backgroundColor="#7658F8";
+                            document.body.style.color="#7658F8";
+                        }
+                        else if (tempc >= 18) {
+                            summary.push('hot','warm','heat', 'burn')
+                            document.getElementById("condition").style.backgroundColor="#E6567A";
+                            document.body.style.color="#E6567A";
+                        }
+                        else {
+                            document.getElementById("condition").style.backgroundColor="#00C0E4";
+                            document.body.style.color="#00C0E4";
+                        }
+                        
+                        
+                        
+                        condition = summary[Math.floor(Math.random()*summary.length)];
+                        console.log(condition);
                         
                         getGif();
                         
@@ -153,14 +161,20 @@
                         document.getElementById("summaryhere").innerHTML = 'reached darksky, but API returned an error';
                      }
                 };
+                
                 getWeather.send();
                 
             };
 
             
             function getGif() {
-                q = "simpsons+" +summary; // search query
-
+                
+                terms = ['simpsons']
+                term = terms[Math.floor(Math.random()*terms.length)];
+                q = condition + "-" + term; // search query
+                
+                console.log(q);
+                
                 request = new XMLHttpRequest;
                 request.open('GET', 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='+q, true);
 
@@ -174,11 +188,8 @@
                      }
                 };
 
-                request.onerror = function() {
-                    console.log('connection error');
-                };
-
                 request.send();
+                
             };
                 
 
