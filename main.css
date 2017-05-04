@@ -37,11 +37,13 @@ h3 {
     width: 100%;
     height: auto;
     background-color: #E6567A;
+    transition: .3s ease-in-out;
 }
 
 img {
     width: 100%;
     max-height: 200px;
+    transition: .3s ease-in-out;
 }
 
 #condition {
